@@ -541,9 +541,11 @@ phiRoughHestonRational.raw <- function(params, xiCurve, h.approx, n=100) functio
   dah <- 1/2*(nu*h-rm)*(nu*h-rp)
   g <- dah + lam * h
   xi <- xiCurve(ti)
-  
-  return(exp(t(g) %*% rev(xi) * t/n))
-}
+  conv <- t(g) %*% rev(xi) * t
+  cor <- (g[1]*xi[n+1]+g[n+1]*xi[1])/2*t
+  psi <- (conv-cor)/n
+  return(exp(psi))
+  }
 
 phiRoughHestonRational <- function(params, xiCurve, h.approx, n=100) function(a, t){
   phi1 <- function(u){ifelse(u==0,1,phiRoughHestonRational.raw(params, xiCurve, h.approx, n)(u,t))}
